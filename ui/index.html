@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carnival Carousel Timer</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="timer-section">
+        <p id="timer" class="highlight">00:00</p>
+      </div>
+
+      <div class="players-section">
+        <div class="players-icon">&#128101;</div>
+        <div id="participants-counter" class="players-count">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parchment Notification -->
+  <div id="upgrade-notification" class="parchment-panel" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%); padding: 25px; border-radius: 18px; text-align: center; z-index: 1000; max-width: 420px;">
+    <h3 id="notification-title" style="font-size: 24px; margin-bottom: 15px; color: #daa520; text-shadow: 3px 3px 6px #000;"></h3>
+    <p id="notification-message" style="font-size: 18px; margin-bottom: 20px; text-shadow: 2px 2px 4px #000;"></p>
+    <p style="font-size: 16px; color: #daa520; margin-top: 10px;">Premi ESC per chiudere la notifica</p>
+  </div>
+
+  <div id="crafting-menu" class="parchment-panel parchment-panel--large" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 30px; border-radius: 18px; text-align: center;">
+    <h2 style="font-size: 28px; margin-bottom: 20px; color: #daa520; text-shadow: 3px 3px 6px #000, 0 0 10px #daa520;">Runa Forging</h2>
+    <p style="font-size: 20px; margin-bottom: 20px; color: #f4e4bc; text-shadow: 2px 2px 4px #000;">Scegli una runa da potenziare con l'antica magia</p>
+    <div id="rune-selection" style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+    </div>
+    <div id="selected-rune" style="margin: 20px 0; display: none; background: rgba(0, 0, 0, 0.5); padding: 10px; border-radius: 10px; border: 2px solid #daa520;">
+      <p style="font-size: 22px; color: #daa520; text-shadow: 2px 2px 4px #000;">Runa Selezionata: <span id="selected-name" style="color: #f4e4bc; text-shadow: 1px 1px 2px #000;"></span></p>
+    </div>
+    <div>
+      <button id="confirm-button" style="padding: 12px 25px; margin: 0 10px; display: none; background: linear-gradient(45deg, #daa520, #ffd700); border: none; border-radius: 5px; color: #000; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px rgba(218, 165, 32, 0.5); transition: all 0.3s;">Conferma Selezione</button>
+      <button id="close-button" style="padding: 12px 25px; margin: 0 10px; background: linear-gradient(45deg, #8b4513, #a0522d); border: none; border-radius: 5px; color: #f4e4bc; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px rgba(139, 69, 19, 0.5); transition: all 0.3s;">Chiudi il Grimorio</button>
+    </div>
+  </div>
+
+  <!-- Phase 2 Upgrade Window -->
+  <div id="upgrade-phase2" class="parchment-panel parchment-panel--large" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 30px; border-radius: 18px; text-align: center;">
+    <h2 style="font-size: 28px; margin-bottom: 20px; color: #daa520; text-shadow: 3px 3px 6px #000, 0 0 10px #daa520;">Incantesimo di Potenziamento</h2>
+
+    <div id="phase2-selected-stone" style="margin: 20px 0; background: rgba(0, 0, 0, 0.5); padding: 15px; border-radius: 10px; border: 2px solid #daa520;">
+      <div id="stone-image" style="margin-bottom: 10px;"></div>
+      <p id="stone-name" style="font-size: 22px; color: #daa520; text-shadow: 2px 2px 4px #000;"></p>
+      <p id="stone-level" style="font-size: 18px; color: #f4e4bc; text-shadow: 1px 1px 2px #000;"></p>
+    </div>
+
+    <div id="phase2-info" style="margin: 20px 0; background: rgba(0, 0, 0, 0.5); padding: 15px; border-radius: 10px; border: 2px solid #daa520;">
+      <p id="galeoni-required" style="font-size: 18px; color: #ffd700; text-shadow: 2px 2px 4px #000;"></p>
+      <p id="next-level-info" style="font-size: 16px; color: #f4e4bc; text-shadow: 1px 1px 2px #000;"></p>
+      <p id="success-chance" style="font-size: 16px; color: #f4e4bc; text-shadow: 1px 1px 2px #000;"></p>
+    </div>
+
+    <div id="upgrade-result-message" style="display: none; margin: 15px 0; padding: 10px; border-radius: 8px; font-size: 18px; font-weight: bold;"></div>
+
+    <div>
+      <button id="upgrade-button" style="padding: 12px 25px; margin: 0 10px; background: linear-gradient(45deg, #daa520, #ffd700); border: none; border-radius: 5px; color: #000; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px rgba(218, 165, 32, 0.5); transition: all 0.3s;">Incanta la Runa</button>
+      <button id="close-phase2-button" style="padding: 12px 25px; margin: 0 10px; background: linear-gradient(45deg, #8b4513, #a0522d); border: none; border-radius: 5px; color: #f4e4bc; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px rgba(139, 69, 19, 0.5); transition: all 0.3s;">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- Upgrade Progress Window -->
+  <div id="upgrade-progress" class="parchment-panel parchment-panel--medium" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 30px; border-radius: 18px; text-align: center; z-index: 2000; min-width: 350px;">
+    <h3 id="upgrade-title" style="font-size: 24px; margin-bottom: 20px; color: #daa520; text-shadow: 3px 3px 6px #000;">Incantesimo in Corso...</h3>
+    
+    <!-- Spinner Animation -->
+    <div id="upgrade-spinner" style="margin: 20px 0;">
+      <div style="width: 60px; height: 60px; border: 4px solid #daa520; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+    </div>
+    
+    <!-- Timer Display -->
+    <div id="upgrade-timer" style="font-size: 32px; font-weight: bold; color: #ffd700; text-shadow: 2px 2px 4px #000, 0 0 10px #daa520; margin: 15px 0;">3</div>
+    
+    <!-- Progress Messages -->
+    <p id="upgrade-message" style="font-size: 16px; color: #f4e4bc; margin: 10px 0; text-shadow: 1px 1px 2px #000;">Stiamo canalizzando l'antica magia...</p>
+    
+    <!-- Result Display (hidden initially) -->
+    <div id="upgrade-result" style="display: none; margin: 20px 0; padding: 15px; border-radius: 10px;">
+      <p id="result-message" style="font-size: 18px; font-weight: bold; margin: 0;"></p>
+    </div>
+    <!-- Explicit Success/Failure Banner (hidden initially) -->
+    <div id="upgrade-banner" style="display: none; margin: 15px 0; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 20px;"></div>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
