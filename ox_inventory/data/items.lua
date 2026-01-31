@@ -358,5 +358,27 @@ return {
 		client = {
 			image = 'runa_speed.png'
 		}
-	}
+	},
+	["metaldetector"] = {
+		label = "Metal Detector",
+		weight = 2500,
+		stack = true,
+		close = true,
+		description = "Maybe it can find things",
+		client = {
+			image = "metaldetector.png",
+			event = 'qb-metaldetecting:togglehand'
+		}
+	},
+	
+	['orologiostellare'] = {
+		label = 'Orologio Stellare',
+		weight = 100,
+		stack = true,
+		close = true,
+		description = 'Orologio magico che ti revive automaticamente quando muori. Cooldown di 30 minuti.',
+		client = {
+			export = 'stellare_watch.useWatch'
+		}
+	},
 }
